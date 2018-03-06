@@ -1,0 +1,59 @@
+//
+//  Swifter.pch
+//  OCLikeSwift
+//
+//  Created by Jincc on 2018/3/5.
+//  Copyright © 2018年 MeiTuan. All rights reserved.
+//
+
+#ifndef Swifter_pch
+#define Swifter_pch
+#import "PSPDFFastEnumeration.h"
+//********************let var ***********
+#if defined(__cplusplus)
+#define let auto const
+#else
+#define let const __auto_type
+#endif
+
+#if defined(__cplusplus)
+#define var auto
+#else
+#define var __auto_type
+#endif
+
+//********************for each ***********
+//for each 
+// Usage: foreach (s, strings) { ... }
+#define foreach(element, collection) for (typeof((collection).pspdf_enumeratedType) element in (collection))
+
+//********************defer**************
+// Similar to defer in Swift
+#define pspdf_defer_block_name_with_prefix(prefix, suffix) prefix ## suffix
+#define pspdf_defer_block_name(suffix) pspdf_defer_block_name_with_prefix(pspdf_defer_, suffix)
+#define defer __strong void(^pspdf_defer_block_name(__LINE__))(void) __attribute__((cleanup(pspdf_defer_cleanup_block), unused)) = ^
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wunused-function"
+static void pspdf_defer_cleanup_block(__strong void(^*block)(void)) {
+    (*block)();
+}
+#pragma clang diagnostic pop
+
+//********************KEYPATH**************
+#if DEBUG
+#define KEYPATH(object, property) ((void)(NO && ((void)object.property, NO)), @#property)
+#else
+#define KEYPATH(object, property) @#property
+#endif
+
+//*******************Boxing CGRect, CGPoint & co*******************8
+
+typedef struct __attribute__((objc_boxable)) CGPoint CGPoint;
+typedef struct __attribute__((objc_boxable)) CGSize CGSize;
+typedef struct __attribute__((objc_boxable)) CGRect CGRect;
+typedef struct __attribute__((objc_boxable)) CGVector CGVector;
+typedef struct __attribute__((objc_boxable)) CGAffineTransform CGAffineTransform;
+typedef struct __attribute__((objc_boxable)) UIEdgeInsets UIEdgeInsets;
+typedef struct __attribute__((objc_boxable)) _NSRange NSRange;
+
+#endif /* Swifter_pch */
